@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 public abstract class AbstractCmd<T> implements Command<T> {
@@ -56,7 +55,9 @@ public abstract class AbstractCmd<T> implements Command<T> {
 	
 	protected int response(InputStream socketIn,OutputStream os) throws IOException {
 		byte[] header = new byte[FDFS_PROTO_PKG_LEN_SIZE + 2];
+		
 		int bytes = socketIn.read(header);
+		
 		if (bytes != header.length) {
 			throw new IOException("recv package size " + bytes + " != "	+ header.length);
 		}

@@ -1,8 +1,10 @@
 package net.mikesu.fastdfs;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.mikesu.fastdfs.client.StorageClient;
@@ -23,16 +25,26 @@ public class FastdfsClientImpl implements FastdfsClient{
 	private static Logger logger = LoggerFactory.getLogger(FastdfsClientImpl.class);
 	private GenericKeyedObjectPool<String, TrackerClient> trackerClientPool;
 	private GenericKeyedObjectPool<String, StorageClient> storageClientPool;
+	private List<String> trackerAddrs = new ArrayList<String>();
 	private Map<String,String> storageIpMap = new ConcurrentHashMap<String, String>();
 	
-	
-	public FastdfsClientImpl() throws Exception {
+	public FastdfsClientImpl(List<String> trackerAddrs) throws Exception {
 		super();
+		this.trackerAddrs = trackerAddrs;
 		trackerClientPool = new GenericKeyedObjectPool<>(new TrackerClientFactory());
 		storageClientPool = new GenericKeyedObjectPool<>(new StorageClientFactory());
 		updateStorageIpMap();
 	}
 	
+	public FastdfsClientImpl(List<String> trackerAddrs,
+			GenericKeyedObjectPool<String, TrackerClient> trackerClientPool,
+			GenericKeyedObjectPool<String, StorageClient> storageClientPool) {
+		super();
+		this.trackerAddrs = trackerAddrs;
+		this.trackerClientPool = trackerClientPool;
+		this.storageClientPool = storageClientPool;
+	}
+
 	private void updateStorageIpMap() throws Exception{
 		String trackerAddr = getTrackerAddr();
 		TrackerClient trackerClient = null;
@@ -132,7 +144,6 @@ public class FastdfsClientImpl implements FastdfsClient{
 	}
 	
 	public Boolean delete(String fileId) throws Exception{
-		
 		String trackerAddr = getTrackerAddr();
 		TrackerClient trackerClient = null;
 		StorageClient storageClient = null;
@@ -141,7 +152,6 @@ public class FastdfsClientImpl implements FastdfsClient{
 		try{
 			FastDfsFile fastDfsFile = new FastDfsFile(fileId);
 			trackerClient = trackerClientPool.borrowObject(trackerAddr);
-			
 			Result<String> result2 = trackerClient.getUpdateStorageAddr(fastDfsFile.group, fastDfsFile.fileName);
 			if(result2.getCode()==0){
 				storageAddr = result2.getData();
@@ -164,10 +174,11 @@ public class FastdfsClientImpl implements FastdfsClient{
 		}
 		return result;
 	}
-
 	
 	public String getTrackerAddr(){
-		return "10.125.176.138:22122";
+        Random r = new Random();
+        int i = r.nextInt(trackerAddrs.size());
+		return trackerAddrs.get(i);
 	}
 	
 	private class FastDfsFile{
