@@ -1,7 +1,5 @@
 package net.mikesu.fastdfs.client;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 
