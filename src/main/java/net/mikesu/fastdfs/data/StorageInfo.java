@@ -1,6 +1,8 @@
-package net.mikesu.fastdfs.protocol;
+package net.mikesu.fastdfs.data;
 
 import java.util.Date;
+
+import net.mikesu.fastdfs.command.AbstractCmd;
 
 public class StorageInfo {
 	

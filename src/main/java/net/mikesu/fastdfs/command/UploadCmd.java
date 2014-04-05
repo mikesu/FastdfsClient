@@ -1,4 +1,4 @@
-package net.mikesu.fastdfs.protocol;
+package net.mikesu.fastdfs.command;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,21 +8,33 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Arrays;
 
+import net.mikesu.fastdfs.data.Result;
+
 public class UploadCmd extends AbstractCmd<String> {
 	
 	private File file;
 
 	@Override
-	public String exec(Socket socket) throws IOException {
+	public Result<String> exec(Socket socket) throws IOException {
 		InputStream is = new FileInputStream(file);
 		request(socket.getOutputStream(), is);
-		byte[] body = response(socket.getInputStream());
-		String group = new String(body, 0,	FDFS_GROUP_NAME_MAX_LEN).trim();
-		String remoteFileName = new String(body,FDFS_GROUP_NAME_MAX_LEN, body.length - FDFS_GROUP_NAME_MAX_LEN);
-		return group + "/" + remoteFileName;
+		Response response = response(socket.getInputStream());
+		if(response.isSuccess()){
+			byte[] data = response.getData();
+			String group = new String(data, 0,	FDFS_GROUP_NAME_MAX_LEN).trim();
+			String remoteFileName = new String(data,FDFS_GROUP_NAME_MAX_LEN, data.length - FDFS_GROUP_NAME_MAX_LEN);
+			Result<String> result = new Result<>(response.getCode());
+			result.setData(group + "/" + remoteFileName);
+			return result;
+			
+		}else{
+			Result<String> result = new Result<>(response.getCode());
+			result.setMessage("Error");
+			return result;
+		}
 	}
 
-	public UploadCmd(File file,String fileName,byte storePathIndex) throws UnsupportedEncodingException {
+	public UploadCmd(File file,String fileName,byte storePathIndex){
 		super();
 		this.file = file;
 		this.requestCmd = STORAGE_PROTO_CMD_UPLOAD_FILE;
@@ -42,14 +54,14 @@ public class UploadCmd extends AbstractCmd<String> {
 		System.arraycopy(fileExtNameByte, 0, body1, fileSizeByte.length + 1, fileExtNameByteLen);
 	}
 
-	private byte[] getFileExtNameByte(String fileName) throws UnsupportedEncodingException {
+	private byte[] getFileExtNameByte(String fileName) {
 		String fileExtName = null;
 		int nPos = fileName.lastIndexOf('.');
 		if (nPos > 0 && fileName.length() - nPos <= FDFS_FILE_EXT_NAME_MAX_LEN + 1) {
 			fileExtName = fileName.substring(nPos + 1);
 		}
 		if (fileExtName != null && fileExtName.length() > 0) {
-			return fileExtName.getBytes("UTF-8");
+			return fileExtName.getBytes(charset);
 		}else{
 			return new byte[0];
 		}

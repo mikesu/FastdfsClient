@@ -11,7 +11,7 @@ public class TrackerClientTest {
 
 //	@Test
 	public void testGetUploadStorageAddr() throws NumberFormatException, UnknownHostException, IOException {
-		TrackerClient trackerClient = new TrackerClient("10.125.176.138:22122");
+		TrackerClientImpl trackerClient = new TrackerClientImpl("10.125.176.138:22122");
 		System.out.println("Upload "+trackerClient.getUploadStorage());
 		trackerClient.close();
 	}
@@ -19,14 +19,14 @@ public class TrackerClientTest {
 //	@Test
 	public void testGetDownloadStorageAddr() throws IOException {
 		
-		TrackerClient trackerClient = new TrackerClient("10.125.176.138:22122");
-		System.out.println("Download " + trackerClient.getDownloadStorageAddr("group1/M00/00/00/Cn2wilM00puAa0xSAANVQ4eIxAM143.jpg"));
+		TrackerClientImpl trackerClient = new TrackerClientImpl("10.125.176.138:22122");
+//		System.out.println("Download " + trackerClient.getDownloadStorageAddr("group1/M00/00/00/Cn2wilM00puAa0xSAANVQ4eIxAM143.jpg"));
 		trackerClient.close();
 	}
 	
 	@Test
 	public void testGetGroupInfos() throws NumberFormatException, UnknownHostException, IOException{
-		TrackerClient trackerClient = new TrackerClient("10.125.176.138:22122");
+		TrackerClientImpl trackerClient = new TrackerClientImpl("10.125.176.138:22122");
 //		trackerClient.getGroupInfos();
 		trackerClient.getStorageInfos("group1");
 		

@@ -8,7 +8,7 @@ public class StorageClientFactory implements KeyedPooledObjectFactory<String, St
 
 	@Override
 	public PooledObject<StorageClient> makeObject(String key) throws Exception {
-		StorageClient storageClient = new StorageClient(key);
+		StorageClientImpl storageClient = new StorageClientImpl(key);
 		PooledObject<StorageClient> pooledStorageClient = new DefaultPooledObject<StorageClient>(storageClient);
 		return pooledStorageClient;
 	}

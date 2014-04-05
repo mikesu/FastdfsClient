@@ -1,4 +1,4 @@
-package net.mikesu.fastdfs.protocol;
+package net.mikesu.fastdfs.command;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -7,24 +7,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.mikesu.fastdfs.data.Result;
+import net.mikesu.fastdfs.data.StorageInfo;
+
 public class StorageInfoCmd extends AbstractCmd<List<StorageInfo>> {
 
 	@Override
-	public List<StorageInfo> exec(Socket socket) throws IOException {
+	public Result<List<StorageInfo>> exec(Socket socket) throws IOException {
 		request(socket.getOutputStream());
-		byte[] data = response(socket.getInputStream());
-		List<StorageInfo> storageInfos = new ArrayList<StorageInfo>();
-		int dataLength = data.length;
-		if(dataLength%StorageInfo.BYTE_SIZE!=0){
-			throw new IOException("recv body length: " + data.length + " is not correct");
+		Response response = response(socket.getInputStream());
+		if(response.isSuccess()){
+			byte[] data = response.getData();
+			int dataLength = data.length;
+			if(dataLength%StorageInfo.BYTE_SIZE!=0){
+				throw new IOException("recv body length: " + data.length + " is not correct");
+			}
+			List<StorageInfo> storageInfos = new ArrayList<StorageInfo>();
+			int offset = 0;
+			while(offset<dataLength){
+				StorageInfo storageInfo = new StorageInfo(data,offset);
+				storageInfos.add(storageInfo);
+				offset += StorageInfo.BYTE_SIZE;
+			}
+			return new Result<>(response.getCode(), storageInfos);
+		}else{
+			return new Result<>(response.getCode(), "Error");
 		}
-		int offset = 0;
-		while(offset<dataLength){
-			StorageInfo storageInfo = new StorageInfo(data,offset);
-			storageInfos.add(storageInfo);
-			offset += StorageInfo.BYTE_SIZE;
-		}
-		return storageInfos;
 	}
 
 	public StorageInfoCmd(String group) throws UnsupportedEncodingException {

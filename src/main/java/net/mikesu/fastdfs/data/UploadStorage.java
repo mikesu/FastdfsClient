@@ -1,4 +1,4 @@
-package net.mikesu.fastdfs.protocol;
+package net.mikesu.fastdfs.data;
 
 public class UploadStorage {
 	

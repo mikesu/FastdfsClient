@@ -8,7 +8,7 @@ public class TrackerClientFactory implements KeyedPooledObjectFactory<String,Tra
 
 	@Override
 	public PooledObject<TrackerClient> makeObject(String key) throws Exception {
-		TrackerClient trackerClient = new TrackerClient(key);
+		TrackerClientImpl trackerClient = new TrackerClientImpl(key);
 		PooledObject<TrackerClient> pooledTrackerClient = new DefaultPooledObject<TrackerClient>(trackerClient);
 		return pooledTrackerClient;
 	}

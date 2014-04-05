@@ -1,23 +1,31 @@
-package net.mikesu.fastdfs.protocol;
+package net.mikesu.fastdfs.command;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Arrays;
 
+import net.mikesu.fastdfs.data.Result;
+import net.mikesu.fastdfs.data.UploadStorage;
+
 
 public class QueryUploadCmd extends AbstractCmd<UploadStorage>  {
 	
 
 	@Override
-	public UploadStorage exec(Socket socket) throws IOException {
+	public Result<UploadStorage> exec(Socket socket) throws IOException {
 		request(socket.getOutputStream());
-		byte[] body = response(socket.getInputStream());
-		String ip_addr = new String(body,FDFS_GROUP_NAME_MAX_LEN,FDFS_IPADDR_SIZE - 1).trim();
-		int port = (int) buff2long(body,FDFS_GROUP_NAME_MAX_LEN	+ FDFS_IPADDR_SIZE - 1);
-		byte storePath = body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
-		UploadStorage uploadStorage = new UploadStorage(ip_addr+":"+String.valueOf(port), storePath);
-		return uploadStorage;
+		Response response = response(socket.getInputStream());
+		if(response.isSuccess()){
+			byte[] data = response.getData();
+			String ip_addr = new String(data,FDFS_GROUP_NAME_MAX_LEN,FDFS_IPADDR_SIZE - 1).trim();
+			int port = (int) buff2long(data,FDFS_GROUP_NAME_MAX_LEN	+ FDFS_IPADDR_SIZE - 1);
+			byte storePath = data[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
+			UploadStorage uploadStorage = new UploadStorage(ip_addr+":"+String.valueOf(port), storePath);
+			return new Result<UploadStorage>(response.getCode(),uploadStorage);
+		}else{
+			return new Result<UploadStorage>(response.getCode(),"Error");
+		}
 	}
 
 
