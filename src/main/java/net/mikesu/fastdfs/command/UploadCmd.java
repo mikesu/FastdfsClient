@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -26,7 +25,6 @@ public class UploadCmd extends AbstractCmd<String> {
 			Result<String> result = new Result<>(response.getCode());
 			result.setData(group + "/" + remoteFileName);
 			return result;
-			
 		}else{
 			Result<String> result = new Result<>(response.getCode());
 			result.setMessage("Error");

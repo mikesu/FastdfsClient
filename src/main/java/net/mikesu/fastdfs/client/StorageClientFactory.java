@@ -1,5 +1,7 @@
 package net.mikesu.fastdfs.client;
 
+import java.io.IOException;
+
 import net.mikesu.fastdfs.FastdfsClientConfig;
 
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
@@ -22,15 +24,14 @@ public class StorageClientFactory implements KeyedPooledObjectFactory<String, St
 	}
 
 	@Override
-	public PooledObject<StorageClient> makeObject(String key) throws Exception {
+	public PooledObject<StorageClient> makeObject(String key) {
 		StorageClientImpl storageClient = new StorageClientImpl(key,connectTimeout,networkTimeout);
 		PooledObject<StorageClient> pooledStorageClient = new DefaultPooledObject<StorageClient>(storageClient);
 		return pooledStorageClient;
 	}
 
 	@Override
-	public void destroyObject(String key, PooledObject<StorageClient> pooledStorageClient)
-			throws Exception {
+	public void destroyObject(String key, PooledObject<StorageClient> pooledStorageClient) throws IOException {
 		StorageClient storageClient = pooledStorageClient.getObject();
 		storageClient.close();
 	}

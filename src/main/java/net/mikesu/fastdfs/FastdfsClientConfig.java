@@ -1,5 +1,6 @@
 package net.mikesu.fastdfs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.Configuration;
@@ -14,7 +15,7 @@ public class FastdfsClientConfig {
 	
 	private int connectTimeout = DEFAULT_CONNECT_TIMEOUT * 1000;
 	private int networkTimeout = DEFAULT_NETWORK_TIMEOUT * 1000;
-	private List<String> trackerAddrs;
+	private List<String> trackerAddrs = new ArrayList<String>();
 //	private int trackerClientPoolMaxIdlePerKey = 
 	
 	public FastdfsClientConfig() {
@@ -26,9 +27,12 @@ public class FastdfsClientConfig {
 		super();
 //		String conf = FastdfsClientConfig.class.getClassLoader().getResource(configFile).getPath();
 		Configuration config = new PropertiesConfiguration(configFile);
-		this.connectTimeout = config.getInt("connect_timeout", DEFAULT_CONNECT_TIMEOUT * 1000);
-		this.networkTimeout = config.getInt("network_timeout", DEFAULT_NETWORK_TIMEOUT * 1000);
-		
+		this.connectTimeout = config.getInt("connect_timeout", DEFAULT_CONNECT_TIMEOUT)*1000;
+		this.networkTimeout = config.getInt("network_timeout", DEFAULT_NETWORK_TIMEOUT)*1000;
+		List<Object> trackerServers = config.getList("tracker_server");
+		for(Object trackerServer:trackerServers){
+			trackerAddrs.add((String)trackerServer);
+		}
 	}
 	
 	public int getConnectTimeout() {

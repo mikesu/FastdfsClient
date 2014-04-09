@@ -44,6 +44,14 @@ public class FastdfsClientImpl implements FastdfsClient{
 		this.trackerClientPool = trackerClientPool;
 		this.storageClientPool = storageClientPool;
 	}
+	
+	
+
+	@Override
+	public void close() {
+		this.trackerClientPool.close();
+		this.storageClientPool.close();
+	}
 
 	private void updateStorageIpMap() throws Exception{
 		String trackerAddr = getTrackerAddr();
@@ -58,7 +66,11 @@ public class FastdfsClientImpl implements FastdfsClient{
 					if(result2.getCode()==0){
 						List<StorageInfo> storageInfos = result2.getData();
 						for(StorageInfo storageInfo:storageInfos){
-							storageIpMap.put(storageInfo.getIpAddr()+":"+storageInfo.getStoragePort(), storageInfo.getDomainName()+":"+storageInfo.getStorageHttpPort());
+							String hostPort = storageInfo.getDomainName();
+							if(storageInfo.getStorageHttpPort()!=80){
+								hostPort = hostPort + ":" + storageInfo.getStorageHttpPort();
+							}
+							storageIpMap.put(storageInfo.getIpAddr()+":"+storageInfo.getStoragePort(), hostPort);
 						}
 					}
 				}

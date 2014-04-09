@@ -26,14 +26,14 @@ public class TrackerClientImpl implements TrackerClient{
 	private Integer connectTimeout = FastdfsClientConfig.DEFAULT_CONNECT_TIMEOUT * 1000;
 	private Integer networkTimeout = FastdfsClientConfig.DEFAULT_NETWORK_TIMEOUT * 1000;
 	
-	public TrackerClientImpl(String address) throws NumberFormatException {
+	public TrackerClientImpl(String address){
 		super();
 		String[] hostport = address.split(":");
 		this.host = hostport[0];
 		this.port = Integer.valueOf(hostport[1]);
 	}
 	
-	public TrackerClientImpl(String address,Integer connectTimeout, Integer networkTimeout) throws NumberFormatException {
+	public TrackerClientImpl(String address,Integer connectTimeout, Integer networkTimeout){
 		this(address);
 		this.connectTimeout = connectTimeout;
 		this.networkTimeout = networkTimeout;

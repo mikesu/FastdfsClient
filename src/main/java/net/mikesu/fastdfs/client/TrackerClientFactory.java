@@ -1,5 +1,7 @@
 package net.mikesu.fastdfs.client;
 
+import java.io.IOException;
+
 import net.mikesu.fastdfs.FastdfsClientConfig;
 
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
@@ -22,15 +24,14 @@ public class TrackerClientFactory implements KeyedPooledObjectFactory<String,Tra
 	}
 
 	@Override
-	public PooledObject<TrackerClient> makeObject(String key) throws Exception {
-		TrackerClientImpl trackerClient = new TrackerClientImpl(key,connectTimeout,networkTimeout);
+	public PooledObject<TrackerClient> makeObject(String key){
+		TrackerClient trackerClient = new TrackerClientImpl(key,connectTimeout,networkTimeout);
 		PooledObject<TrackerClient> pooledTrackerClient = new DefaultPooledObject<TrackerClient>(trackerClient);
 		return pooledTrackerClient;
 	}
 
 	@Override
-	public void destroyObject(String key, PooledObject<TrackerClient> pooledTrackerClient)
-			throws Exception {
+	public void destroyObject(String key, PooledObject<TrackerClient> pooledTrackerClient) throws IOException{
 		TrackerClient trackerClient = pooledTrackerClient.getObject();
 		trackerClient.close();
 	}

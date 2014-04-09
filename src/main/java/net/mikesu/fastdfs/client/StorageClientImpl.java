@@ -29,14 +29,14 @@ public class StorageClientImpl implements StorageClient{
 		return socket;
 	}
 	
-	public StorageClientImpl(String address) throws NumberFormatException {
+	public StorageClientImpl(String address){
 		super();
 		String[] hostport = address.split(":");
 		this.host = hostport[0];
 		this.port = Integer.valueOf(hostport[1]);
 	}
 	
-	public StorageClientImpl(String address,Integer connectTimeout, Integer networkTimeout) throws NumberFormatException {
+	public StorageClientImpl(String address,Integer connectTimeout, Integer networkTimeout){
 		this(address);
 		this.connectTimeout = connectTimeout;
 		this.networkTimeout = networkTimeout;
