@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -21,7 +23,14 @@ public class FastdfsClientTest {
 		String url = fastdfsClient.getUrl(fileId);
 		assertNotNull(url);
 		System.out.println("url:"+url);
-		boolean result = fastdfsClient.delete(fileId);
+		Map<String,String> meta = new HashMap<String, String>();
+		meta.put("fileName", file.getName());
+		boolean result = fastdfsClient.setMeta(fileId, meta);
+		assertTrue(result);
+		Map<String,String> meta2 = fastdfsClient.getMeta(fileId);
+		assertNotNull(meta2);
+		System.out.println(meta2.get("fileName"));
+		result = fastdfsClient.delete(fileId);
 		assertTrue(result);
 		fastdfsClient.close();
 	}

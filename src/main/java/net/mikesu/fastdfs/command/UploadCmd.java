@@ -36,7 +36,7 @@ public class UploadCmd extends AbstractCmd<String> {
 		super();
 		this.file = file;
 		this.requestCmd = STORAGE_PROTO_CMD_UPLOAD_FILE;
-		this.requestSize = 15 + file.length();
+		this.body2Len = file.length();
 		this.responseCmd = STORAGE_PROTO_CMD_RESP;
 		this.responseSize = -1;
 		this.body1 = new byte[15];

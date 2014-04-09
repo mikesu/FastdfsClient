@@ -36,7 +36,6 @@ public class GroupInfoCmd extends AbstractCmd<List<GroupInfo>> {
 	public GroupInfoCmd() {
 		super();
 		this.requestCmd = TRACKER_PROTO_CMD_SERVER_LIST_GROUP;
-		this.requestSize = 0;
 		this.responseCmd = TRACKER_PROTO_CMD_RESP;
 		this.responseSize = -1;
 	}

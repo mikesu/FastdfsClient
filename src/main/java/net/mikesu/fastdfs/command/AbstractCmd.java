@@ -9,10 +9,10 @@ import java.util.Arrays;
 public abstract class AbstractCmd<T> implements Command<T> {
 	
 	protected byte requestCmd;
-	protected long requestSize;
 	protected byte responseCmd;
 	protected long responseSize;
 	protected byte[] body1;
+	protected long body2Len = 0l;
 	
 	protected void request(OutputStream socketOut)throws IOException {
 		socketOut.write(getRequestHeaderAndBody1());
@@ -38,7 +38,7 @@ public abstract class AbstractCmd<T> implements Command<T> {
 		}
 		byte[] header = new byte[FDFS_PROTO_PKG_LEN_SIZE + 2 + body1.length];
 		Arrays.fill(header, (byte) 0);
-		byte[] hex_len = long2buff(requestSize);
+		byte[] hex_len = long2buff(body1.length+body2Len);
 		System.arraycopy(hex_len, 0, header, 0, hex_len.length);
 		System.arraycopy(body1, 0, header, FDFS_PROTO_PKG_LEN_SIZE + 2, body1.length);
 		header[PROTO_HEADER_CMD_INDEX] = requestCmd;

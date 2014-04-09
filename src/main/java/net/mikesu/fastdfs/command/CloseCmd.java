@@ -10,7 +10,6 @@ public class CloseCmd extends AbstractCmd<Boolean> {
 	public CloseCmd() {
 		super();
 		this.requestCmd = FDFS_PROTO_CMD_QUIT;
-		this.requestSize = 0;
 	}
 
 	@Override

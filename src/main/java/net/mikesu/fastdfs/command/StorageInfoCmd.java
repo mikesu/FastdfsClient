@@ -48,7 +48,6 @@ public class StorageInfoCmd extends AbstractCmd<List<StorageInfo>> {
 		Arrays.fill(body1, (byte) 0);
 		System.arraycopy(bs, 0, body1, 0, group_len);
 		this.requestCmd = TRACKER_PROTO_CMD_SERVER_LIST_STORAGE;
-		this.requestSize = body1.length;
 		this.responseCmd = TRACKER_PROTO_CMD_RESP;
 		this.responseSize = -1;
 	}
@@ -68,7 +67,6 @@ public class StorageInfoCmd extends AbstractCmd<List<StorageInfo>> {
 		System.arraycopy(groupByte, 0, body1, 0, group_len);
 		System.arraycopy(ipByte, 0, body1, FDFS_GROUP_NAME_MAX_LEN, ipByte.length);
 		this.requestCmd = TRACKER_PROTO_CMD_SERVER_LIST_STORAGE;
-		this.requestSize = body1.length;
 		this.responseCmd = TRACKER_PROTO_CMD_RESP;
 		this.responseSize = -1;
 	}

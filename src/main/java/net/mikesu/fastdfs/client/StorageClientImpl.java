@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Map;
 
 import net.mikesu.fastdfs.FastdfsClientConfig;
 import net.mikesu.fastdfs.command.CloseCmd;
 import net.mikesu.fastdfs.command.Command;
 import net.mikesu.fastdfs.command.DeleteCmd;
+import net.mikesu.fastdfs.command.GetMetaDataCmd;
+import net.mikesu.fastdfs.command.SetMetaDataCmd;
 import net.mikesu.fastdfs.command.UploadCmd;
 import net.mikesu.fastdfs.data.Result;
 
@@ -60,6 +63,22 @@ public class StorageClientImpl implements StorageClient{
 		Socket socket = getSocket();
 		DeleteCmd deleteCmd = new DeleteCmd(group,fileName);
 		return deleteCmd.exec(socket);
+	}
+
+	@Override
+	public Result<Boolean> setMeta(String group, String fileName,
+			Map<String, String> meta) throws IOException {
+		Socket socket = getSocket();
+		SetMetaDataCmd setMetaDataCmd = new SetMetaDataCmd(group, fileName, meta);
+		return setMetaDataCmd.exec(socket);
+	}
+
+	@Override
+	public Result<Map<String, String>> getMeta(String group, String fileName)
+			throws IOException {
+		Socket socket = getSocket();
+		GetMetaDataCmd getMetaDataCmd = new GetMetaDataCmd(group, fileName);
+		return getMetaDataCmd.exec(socket);
 	}
 
 }

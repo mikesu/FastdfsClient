@@ -96,6 +96,73 @@ public class FastdfsClientImpl implements FastdfsClient{
 		return downloadHostPort;
 	}
 	
+	@Override
+	public Boolean setMeta(String fileId, Map<String, String> meta)
+			throws Exception {
+		String trackerAddr = getTrackerAddr();
+		TrackerClient trackerClient = null;
+		StorageClient storageClient = null;
+		Boolean result = null;
+		String storageAddr=null;
+		try{
+			FastDfsFile fastDfsFile = new FastDfsFile(fileId);
+			trackerClient = trackerClientPool.borrowObject(trackerAddr);
+			Result<String> result2 = trackerClient.getUpdateStorageAddr(fastDfsFile.group, fastDfsFile.fileName);
+			if(result2.getCode()==0){
+				storageAddr = result2.getData();
+				storageClient = storageClientPool.borrowObject(storageAddr);
+				Result<Boolean> result3 = storageClient.setMeta(fastDfsFile.group, fastDfsFile.fileName,meta);
+				if(result3.getCode()==0||result3.getCode()==0){
+					result = result3.getData();
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		}finally{
+			if(storageClient!=null){
+				storageClientPool.returnObject(storageAddr, storageClient);
+			}
+			if(trackerClient!=null){
+				trackerClientPool.returnObject(trackerAddr, trackerClient);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, String> getMeta(String fileId) throws Exception {
+		String trackerAddr = getTrackerAddr();
+		TrackerClient trackerClient = null;
+		StorageClient storageClient = null;
+		Map<String, String> meta = null;
+		String storageAddr=null;
+		try{
+			FastDfsFile fastDfsFile = new FastDfsFile(fileId);
+			trackerClient = trackerClientPool.borrowObject(trackerAddr);
+			Result<String> result2 = trackerClient.getUpdateStorageAddr(fastDfsFile.group, fastDfsFile.fileName);
+			if(result2.getCode()==0){
+				storageAddr = result2.getData();
+				storageClient = storageClientPool.borrowObject(storageAddr);
+				Result<Map<String,String>> result3 = storageClient.getMeta(fastDfsFile.group, fastDfsFile.fileName);
+				if(result3.getCode()==0||result3.getCode()==0){
+					meta = result3.getData();
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		}finally{
+			if(storageClient!=null){
+				storageClientPool.returnObject(storageAddr, storageClient);
+			}
+			if(trackerClient!=null){
+				trackerClientPool.returnObject(trackerAddr, trackerClient);
+			}
+		}
+		return meta;
+	}
+
 	public String getUrl(String fileId) throws Exception{
 		String trackerAddr = getTrackerAddr();
 		TrackerClient trackerClient = null;

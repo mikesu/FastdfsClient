@@ -40,7 +40,6 @@ public class QueryUpdateCmd extends AbstractCmd<String> {
 		System.arraycopy(groupByte, 0, body1, 0, group_len);
 		System.arraycopy(fileNameByte, 0, body1, FDFS_GROUP_NAME_MAX_LEN, fileNameByte.length);
 		this.requestCmd = TRACKER_PROTO_CMD_SERVICE_QUERY_UPDATE;
-		this.requestSize = FDFS_GROUP_NAME_MAX_LEN + fileNameByte.length;
 		this.responseCmd = TRACKER_PROTO_CMD_RESP;
 		this.responseSize = TRACKER_QUERY_STORAGE_FETCH_BODY_LEN;
 	}
